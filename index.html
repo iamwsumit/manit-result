@@ -20,7 +20,7 @@
     />
     <meta
       property="og:url"
-      content="https://example.com/student-marks-portal"
+      content="https://iamwsumit.github.io/manit-result/"
     />
 
     <style>
@@ -216,6 +216,33 @@
         margin-bottom: 0.5rem;
       }
 
+      .semester-selector {
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .semester-selector label {
+        font-weight: 500;
+        margin-bottom: 0;
+      }
+
+      .semester-dropdown {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: white;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .semester-dropdown:focus {
+        border-color: var(--primary-color);
+        outline: none;
+      }
+
       .marks-table {
         width: 100%;
         border-collapse: collapse;
@@ -389,6 +416,12 @@
       <div class="report-card" id="report-card">
         <div class="student-info" id="student-info"></div>
 
+        <div class="semester-selector">
+          <label for="semester-select">Select Semester:</label>
+          <select id="semester-select" class="semester-dropdown">
+          </select>
+        </div>
+
         <table class="marks-table" id="marks-table">
           <thead>
             <tr>
@@ -409,6 +442,8 @@
     </div>
 
     <script>
+      let allResultData = null;
+      
       document.querySelectorAll(".tab").forEach((tab) => {
         tab.addEventListener("click", () => {
           document
@@ -429,6 +464,12 @@
       const loadingBar = document.getElementById("loading-bar");
       const errorMessage = document.getElementById("error-message");
       const reportCard = document.getElementById("report-card");
+      const semesterSelect = document.getElementById("semester-select");
+
+      semesterSelect.addEventListener("change", function() {
+        const selectedSemester = this.value;
+        displaySemesterData(selectedSemester);
+      });
 
       showMarksBtn.addEventListener("click", async () => {
         errorMessage.style.display = "none";
@@ -501,7 +542,14 @@
           document.getElementById("scholar-no").value = "";
           document.getElementById("password").value = "";
           document.getElementById("jwt-token").value = "";
-          displayResults(resultData);
+          
+          allResultData = resultData;
+          
+          populateSemesterDropdown(resultData);
+          
+          if (resultData.data.Semester_Data && resultData.data.Semester_Data.length > 0) {
+            displayResults(resultData);
+          }
 
           loadingBar.style.width = "100%";
           setTimeout(() => {
@@ -522,49 +570,77 @@
       document.getElementById("print-btn").addEventListener("click", () => {
         window.print();
       });
-
-      function displayResults(data) {
-        data = data.data;
-        const bd = data.Basic_Details[0];
-        data = data.Semester_Data[0].data;
+      
+      function populateSemesterDropdown(resultData) {
+        semesterSelect.innerHTML = "";
+        
+        if (resultData.data && resultData.data.Semester_Data) {
+          const semesterData = resultData.data.Semester_Data;
+          
+          semesterData.forEach((semester, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = semester.data.semester_term || `Semester ${index + 1}`;
+            semesterSelect.appendChild(option);
+          });
+        }
+      }
+      
+      function displaySemesterData(semesterIndex) {
+        if (allResultData && allResultData.data && allResultData.data.Semester_Data) {
+          const semesterData = allResultData.data.Semester_Data[semesterIndex];
+          if (semesterData) {
+            updateResultsDisplay(semesterData);
+          }
+        }
+      }
+      
+      function updateResultsDisplay(semesterData) {
+        const data = semesterData.data;
+        const bd = allResultData.data.Basic_Details[0];
         const total = data.grand_total;
-
-        const studentInfo = document.getElementById("student-info");
-        studentInfo.innerHTML = `
-                <h3>Student Report Card</h3>
-                <p><strong>Name:</strong> ${bd.full_name}</p>
-                <p><strong>Scholar No:</strong> ${bd.roll_no}</p>
-                <p><strong>Branch:</strong> ${bd.department_name}</p>
-                <p><strong>Semester:</strong> ${bd.semester_term_description}</p>
-            `;
 
         const marksTableBody = document.getElementById("marks-table-body");
         marksTableBody.innerHTML = "";
 
         data.subjects.forEach((subject) => {
           const row = document.createElement("tr");
-
           const gradeClass = `grade-${subject.grade.charAt(0)}`;
 
           row.innerHTML = `
-                    <td>${subject.subname}</td>
-                    <td>${subject.marks_obtained}/${subject.total_marks}</td>
-                    <td>${subject.mid_term_marks}/${subject.total_mid_term_marks}</td>
-                    <td>${subject.end_term_marks}/${subject.total_end_term_marks}</td>
-                    <td class="${gradeClass}">${subject.grade}</td>
-                `;
+            <td>${subject.subname}</td>
+            <td>${subject.marks_obtained}/${subject.total_marks}</td>
+            <td>${subject.mid_term_marks}/${subject.total_mid_term_marks}</td>
+            <td>${subject.end_term_marks}/${subject.total_end_term_marks}</td>
+            <td class="${gradeClass}">${subject.grade}</td>
+          `;
 
           marksTableBody.appendChild(row);
         });
 
         const summary = document.getElementById("summary");
         summary.innerHTML = `
-                <p><strong>Grand Total:</strong> ${total.marks_obtained}/${total.total_marks}</p>
-                <p><strong>SGPA:</strong> ${total.sgpa}</p>
-            `;
+          <p><strong>Grand Total:</strong> ${total.marks_obtained}/${total.total_marks}</p>
+          <p><strong>SGPA:</strong> ${total.sgpa}</p>
+        `;
+      }
 
+      function displayResults(data) {
+        const bd = data.data.Basic_Details[0];
+        const firstSemesterData = data.data.Semester_Data[0].data;
+        
+        const studentInfo = document.getElementById("student-info");
+        studentInfo.innerHTML = `
+          <h3>Student Report Card</h3>
+          <p><strong>Name:</strong> ${bd.full_name}</p>
+          <p><strong>Scholar No:</strong> ${bd.roll_no}</p>
+          <p><strong>Branch:</strong> ${bd.department_name}</p>
+        `;
+        
+        updateResultsDisplay(data.data.Semester_Data[0]);
+        
         reportCard.style.display = "block";
-
+        
         reportCard.scrollIntoView({ behavior: "smooth" });
       }
     </script>
