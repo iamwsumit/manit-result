@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Marks Portal</title>
+
+    <meta
+      property="og:title"
+      content="Student Marks Portal - View Your Results"
+    />
+    <meta
+      property="og:description"
+      content="A secure way to access and view your semester results and academic performance. Check your grades, marks, and SGPA with ease."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://manitfirst.web.app/assets/manit.png"
+    />
+    <meta
+      property="og:url"
+      content="https://example.com/student-marks-portal"
+    />
+
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --accent-color: #f39c12;
+        --background-color: #f8f9fa;
+        --card-color: #ffffff;
+        --text-color: #333333;
+        --error-color: #e74c3c;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .card {
+        background-color: var(--card-color);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .tab {
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-bottom: 2px solid transparent;
+      }
+
+      .tab.active {
+        border-bottom: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+
+      .form-section {
+        display: none;
+      }
+
+      .form-section.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .recommended {
+        display: inline-block;
+        background-color: var(--accent-color);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+      }
+
+      .token-extraction {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 0.75rem;
+        border-radius: 5px;
+        font-family: monospace;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border 0.3s;
+        font-size: 1rem;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+      }
+
+      .btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      .btn-loading .btn-text {
+        visibility: hidden;
+      }
+
+      .loading-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        background-color: rgba(255, 255, 255, 0.3);
+        transition: width 0.3s linear;
+      }
+
+      .disclaimer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        margin-top: 1rem;
+      }
+
+      .error-message {
+        color: var(--error-color);
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background-color: rgba(231, 76, 60, 0.1);
+        border-radius: 5px;
+        display: none;
+      }
+
+      .report-card {
+        background-color: var(--card-color);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-top: 2rem;
+        display: none;
+      }
+
+      .student-info {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 1rem;
+      }
+
+      .student-info h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      .student-info p {
+        margin-bottom: 0.5rem;
+      }
+
+      .marks-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+      }
+
+      .marks-table th,
+      .marks-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .marks-table th {
+        background-color: rgba(52, 152, 219, 0.1);
+        font-weight: 600;
+      }
+
+      .marks-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .grade-A {
+        color: #27ae60;
+      }
+
+      .grade-B {
+        color: #2980b9;
+      }
+
+      .grade-C {
+        color: #f39c12;
+      }
+
+      .grade-D,
+      .grade-F {
+        color: #e74c3c;
+      }
+
+      .summary {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .summary p {
+        margin-bottom: 0.5rem;
+      }
+
+      .print-btn {
+        background-color: var(--secondary-color);
+        margin-top: 1rem;
+        display: inline-block;
+      }
+
+      .print-btn:hover {
+        background-color: #27ae60;
+      }
+
+      @media print {
+        body {
+          padding: 0;
+          background-color: white;
+        }
+
+        .container {
+          max-width: 100%;
+        }
+
+        .card,
+        .header {
+          display: none;
+        }
+
+        .report-card {
+          display: block !important;
+          box-shadow: none;
+          padding: 0;
+        }
+
+        .print-btn {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        .tab {
+          padding: 0.5rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Student Marks Portal</h1>
+        <p>View your semester results securely</p>
+      </div>
+
+      <div class="card">
+        <div class="tabs">
+          <div class="tab active" data-tab="login">Login with Credentials</div>
+          <div class="tab" data-tab="token">Use JWT Token</div>
+        </div>
+
+        <div class="form-section active" id="login-section">
+          <div class="form-group">
+            <label for="scholar-no">Scholar Number</label>
+            <input
+              type="text"
+              id="scholar-no"
+              class="form-control"
+              placeholder="Enter your scholar number"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              placeholder="Enter your password"
+            />
+          </div>
+        </div>
+
+        <div class="form-section" id="token-section">
+          <div class="form-group">
+            <label for="jwt-token"
+              >JWT Token <span class="recommended">Recommended</span></label
+            >
+            <input
+              type="text"
+              id="jwt-token"
+              class="form-control"
+              placeholder="Paste your JWT token here"
+            />
+            <div class="token-extraction">localStorage.getItem('token')</div>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem">
+              Run the above code in console of student portal website to get
+              your JWT token.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button id="show-marks-btn" class="btn">
+            <div class="loading-bar" id="loading-bar"></div>
+            <span class="btn-text">Show Marks</span>
+          </button>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <div class="disclaimer">
+          <p>
+            This site does not collect or store any of your data. All
+            information is processed locally in your browser.
+          </p>
+        </div>
+      </div>
+
+      <div class="report-card" id="report-card">
+        <div class="student-info" id="student-info"></div>
+
+        <table class="marks-table" id="marks-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Total Marks</th>
+              <th>Mid Term</th>
+              <th>End Term</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody id="marks-table-body"></tbody>
+        </table>
+
+        <div class="summary" id="summary"></div>
+
+        <button class="btn print-btn" id="print-btn">Print Report Card</button>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          document
+            .querySelectorAll(".form-section")
+            .forEach((s) => s.classList.remove("active"));
+
+          tab.classList.add("active");
+          document
+            .getElementById(`${tab.dataset.tab}-section`)
+            .classList.add("active");
+        });
+      });
+
+      const showMarksBtn = document.getElementById("show-marks-btn");
+      const loadingBar = document.getElementById("loading-bar");
+      const errorMessage = document.getElementById("error-message");
+      const reportCard = document.getElementById("report-card");
+
+      showMarksBtn.addEventListener("click", async () => {
+        errorMessage.style.display = "none";
+
+        const scholarNo = document.getElementById("scholar-no").value;
+        const password = document.getElementById("password").value;
+        let jwtToken = document.getElementById("jwt-token").value;
+
+        if (!jwtToken && (!scholarNo || !password)) {
+          errorMessage.textContent =
+            "Please provide either login credentials or JWT token";
+          errorMessage.style.display = "block";
+          return;
+        }
+
+        showMarksBtn.classList.add("btn-loading");
+        loadingBar.style.width = "30%";
+
+        try {
+          if (!jwtToken) {
+            loadingBar.style.width = "50%";
+
+            const loginResponse = await fetch(
+              "https://erpapi.manit.ac.in/api/login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  username: scholarNo,
+                  password: password,
+                }),
+              }
+            );
+
+            if (!loginResponse.ok) {
+              throw new Error("Login failed. Please check your credentials.");
+            }
+
+            const loginData = await loginResponse.json();
+            jwtToken = loginData.token;
+          }
+
+          loadingBar.style.width = "70%";
+
+          const data = jwtToken.split(".")[1];
+          const studentuid = JSON.parse(atob(data)).studentuid;
+          const resultResponse = await fetch(
+            "https://erpapi.manit.ac.in/api/student_result",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${jwtToken}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                studentuid: studentuid,
+              }),
+            }
+          );
+
+          if (!resultResponse.ok) {
+            throw new Error("Failed to fetch results. Please try again.");
+          }
+
+          loadingBar.style.width = "90%";
+
+          const resultData = await resultResponse.json();
+          document.getElementById("scholar-no").value = "";
+          document.getElementById("password").value = "";
+          document.getElementById("jwt-token").value = "";
+          displayResults(resultData);
+
+          loadingBar.style.width = "100%";
+          setTimeout(() => {
+            showMarksBtn.classList.remove("btn-loading");
+            loadingBar.style.width = "0%";
+          }, 500);
+        } catch (error) {
+          console.error("Error:", error);
+          errorMessage.textContent =
+            error.message || "An unexpected error occurred. Please try again.";
+          errorMessage.style.display = "block";
+
+          showMarksBtn.classList.remove("btn-loading");
+          loadingBar.style.width = "0%";
+        }
+      });
+
+      document.getElementById("print-btn").addEventListener("click", () => {
+        window.print();
+      });
+
+      function displayResults(data) {
+        data = data.data;
+        const bd = data.Basic_Details[0];
+        data = data.Semester_Data[0].data;
+        const total = data.grand_total;
+
+        const studentInfo = document.getElementById("student-info");
+        studentInfo.innerHTML = `
+                <h3>Student Report Card</h3>
+                <p><strong>Name:</strong> ${bd.full_name}</p>
+                <p><strong>Scholar No:</strong> ${bd.roll_no}</p>
+                <p><strong>Branch:</strong> ${bd.department_name}</p>
+                <p><strong>Semester:</strong> ${bd.semester_term_description}</p>
+            `;
+
+        const marksTableBody = document.getElementById("marks-table-body");
+        marksTableBody.innerHTML = "";
+
+        data.subjects.forEach((subject) => {
+          const row = document.createElement("tr");
+
+          const gradeClass = `grade-${subject.grade.charAt(0)}`;
+
+          row.innerHTML = `
+                    <td>${subject.subname}</td>
+                    <td>${subject.marks_obtained}/${subject.total_marks}</td>
+                    <td>${subject.mid_term_marks}/${subject.total_mid_term_marks}</td>
+                    <td>${subject.end_term_marks}/${subject.total_end_term_marks}</td>
+                    <td class="${gradeClass}">${subject.grade}</td>
+                `;
+
+          marksTableBody.appendChild(row);
+        });
+
+        const summary = document.getElementById("summary");
+        summary.innerHTML = `
+                <p><strong>Grand Total:</strong> ${total.marks_obtained}/${total.total_marks}</p>
+                <p><strong>SGPA:</strong> ${total.sgpa}</p>
+            `;
+
+        reportCard.style.display = "block";
+
+        reportCard.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
