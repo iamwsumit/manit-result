@@ -24,6 +24,42 @@
     />
 
     <style>
+      .stats-button {
+        background: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      .stats-info-section {
+        background: var(--card-color);
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 15px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .stats-info-section h3 {
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+        color: var(--text-color);
+      }
+
+      .stats-info-section p {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        color: var(--text-color);
+      }
+
       :root {
         --primary-color: #3498db;
         --secondary-color: #2ecc71;
@@ -404,6 +440,16 @@
         </div>
 
         <div class="error-message" id="error-message"></div>
+        <div class="stats-info-section">
+          <h3>📊 Marks vs Grade</h3>
+          <p>
+            View grade distribution and marking criteria for all subjects across
+            different semesters
+          </p>
+          <a href="marks-grade.html" class="stats-button">
+            📈 View Marks vs Grade
+          </a>
+        </div>
 
         <div class="disclaimer">
           <p>
@@ -418,8 +464,7 @@
 
         <div class="semester-selector">
           <label for="semester-select">Select Semester:</label>
-          <select id="semester-select" class="semester-dropdown">
-          </select>
+          <select id="semester-select" class="semester-dropdown"></select>
         </div>
 
         <table class="marks-table" id="marks-table">
@@ -443,7 +488,7 @@
 
     <script>
       let allResultData = null;
-      
+
       document.querySelectorAll(".tab").forEach((tab) => {
         tab.addEventListener("click", () => {
           document
@@ -466,7 +511,7 @@
       const reportCard = document.getElementById("report-card");
       const semesterSelect = document.getElementById("semester-select");
 
-      semesterSelect.addEventListener("change", function() {
+      semesterSelect.addEventListener("change", function () {
         const selectedSemester = this.value;
         displaySemesterData(selectedSemester);
       });
@@ -527,7 +572,7 @@
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                studentuid: studentuid,
+                studentuid: 9055,
               }),
             }
           );
@@ -542,12 +587,15 @@
           document.getElementById("scholar-no").value = "";
           document.getElementById("password").value = "";
           document.getElementById("jwt-token").value = "";
-          
+
           allResultData = resultData;
-          
+
           populateSemesterDropdown(resultData);
-          
-          if (resultData.data.Semester_Data && resultData.data.Semester_Data.length > 0) {
+
+          if (
+            resultData.data.Semester_Data &&
+            resultData.data.Semester_Data.length > 0
+          ) {
             displayResults(resultData);
           }
 
@@ -570,31 +618,36 @@
       document.getElementById("print-btn").addEventListener("click", () => {
         window.print();
       });
-      
+
       function populateSemesterDropdown(resultData) {
         semesterSelect.innerHTML = "";
-        
+
         if (resultData.data && resultData.data.Semester_Data) {
           const semesterData = resultData.data.Semester_Data;
-          
+
           semesterData.forEach((semester, index) => {
             const option = document.createElement("option");
             option.value = index;
-            option.textContent = semester.data.semester_term || `Semester ${index + 1}`;
+            option.textContent =
+              semester.data.semester_term || `Semester ${index + 1}`;
             semesterSelect.appendChild(option);
           });
         }
       }
-      
+
       function displaySemesterData(semesterIndex) {
-        if (allResultData && allResultData.data && allResultData.data.Semester_Data) {
+        if (
+          allResultData &&
+          allResultData.data &&
+          allResultData.data.Semester_Data
+        ) {
           const semesterData = allResultData.data.Semester_Data[semesterIndex];
           if (semesterData) {
             updateResultsDisplay(semesterData);
           }
         }
       }
-      
+
       function updateResultsDisplay(semesterData) {
         const data = semesterData.data;
         const bd = allResultData.data.Basic_Details[0];
@@ -628,7 +681,7 @@
       function displayResults(data) {
         const bd = data.data.Basic_Details[0];
         const firstSemesterData = data.data.Semester_Data[0].data;
-        
+
         const studentInfo = document.getElementById("student-info");
         studentInfo.innerHTML = `
           <h3>Student Report Card</h3>
@@ -636,11 +689,11 @@
           <p><strong>Scholar No:</strong> ${bd.roll_no}</p>
           <p><strong>Branch:</strong> ${bd.department_name}</p>
         `;
-        
+
         updateResultsDisplay(data.data.Semester_Data[0]);
-        
+
         reportCard.style.display = "block";
-        
+
         reportCard.scrollIntoView({ behavior: "smooth" });
       }
     </script>
