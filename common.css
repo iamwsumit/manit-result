@@ -1,0 +1,138 @@
+/* Developer Credit Badge */
+.dev-badge {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-color) 100%
+  );
+  padding: 0px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.dev-badge:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+
+.badge-inner {
+  background: white;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-color) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.badge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-label {
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.badge-name {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 700;
+}
+
+.badge-socials {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 2px solid #f0f0f0;
+}
+
+.social-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.social-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+.social-icon.github {
+  background: #24292e;
+}
+
+.social-icon.linkedin {
+  background: #0077b5;
+}
+
+.social-icon.email {
+  background: #ea4335;
+}
+
+.social-icon:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  margin-bottom: 8px;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
