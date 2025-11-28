@@ -38,7 +38,7 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
     
     url = "https://erpapi.manit.ac.in/api/student_result"
     headers = {
-        "Authorization": jwt_token,
+        "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
     payload = {
@@ -46,7 +46,7 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
         "programID": 80,
     }
     
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=30.0, verify=False) as client:
         try:
             response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
