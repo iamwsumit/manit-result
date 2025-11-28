@@ -1,3 +1,14 @@
+"""
+The college API changes many times, formats.
+When I fix the site, many users faces caches and other issues.
+
+So, I built this backend wrapper so I can fix things once when the college API changes, and 
+it just works for everyone instantly. No cache clearing, no file updates needed.
+
+Your data just passes through - nothing gets stored.
+"""
+
+
 from fastapi import FastAPI, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
 import httpx

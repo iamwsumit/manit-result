@@ -495,10 +495,10 @@
           </button>
         </a>
         </div>
-        <div class="disclaimer">
-          <p>
-            This site does not collect or store any of your data. All
-            information is processed locally in your browser.
+        <div style="padding: 12px; background-color: #f9fafb; border-left: 3px solid #6b7280; margin: 20px 0; font-family: system-ui, -apple-system, sans-serif;">
+          <p style="margin: 0; color: #4b5563; font-size: 14px; line-height: 1.5;">
+            Your scholar number and password are processed locally in your browser only. This site does not store any credentials or personal data. 
+            <a href="https://github.com/iamwsumit/manit-result" target="_blank" style="color: #2563eb; text-decoration: none;">View source code</a>
           </p>
         </div>
         </div>
@@ -762,6 +762,7 @@
         updateResultsDisplay(data.data.Semester_Data[0]);
 
         reportCard.style.display = "block";
+        reportCard.style.marginBottom = "4rem";
 
         reportCard.scrollIntoView({ behavior: "smooth" });
       }
