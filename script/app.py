@@ -1,6 +1,5 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 import httpx
 import base64
 import json
@@ -15,9 +14,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-class TokenRequest(BaseModel):
-    jwt_token: str
 
 def decode_jwt_payload(jwt_token: str) -> dict:
     try:
@@ -62,11 +58,15 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
             )
 
 @app.get("/")
-async def fetch_result(request: TokenRequest):
+async def fetch_result(token: str = Header(...)):
     
-    jwt_token = request.jwt_token
+    if token is None or token.strip() == "":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="JWT token is required in the Authorization header"
+        )
     
-    payload = decode_jwt_payload(jwt_token)
+    payload = decode_jwt_payload(token)
     student_uid = payload.get("studentuid")
     
     if not student_uid:
@@ -75,7 +75,7 @@ async def fetch_result(request: TokenRequest):
             detail="studentuid not found in JWT token"
         )
     
-    result_data = await fetch_student_result(jwt_token, student_uid)
+    result_data = await fetch_student_result(token, student_uid)
     
     if result_data.get("status") != "success":
         raise HTTPException(

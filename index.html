@@ -635,20 +635,14 @@
 
           loadingBar.style.width = "70%";
 
-          const data = jwtToken.split(".")[1];
-          const studentuid = JSON.parse(atob(data)).studentuid;
           const resultResponse = await fetch(
-            "https://erpapi.manit.ac.in/api/student_result",
+            "https://manit-result.vercel.app/",
             {
-              method: "POST",
+              method: "GET",
               headers: {
-                Authorization: `Bearer ${jwtToken}`,
+                token: jwtToken,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                studentuid: studentuid,
-                programID: 80,
-              }),
             }
           );
 
