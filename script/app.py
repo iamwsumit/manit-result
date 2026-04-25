@@ -1,11 +1,6 @@
 """
-The college API changes many times, formats.
-When I fix the site, many users faces caches and other issues.
-
-So, I built this backend wrapper so I can fix things once when the college API changes, and 
-it just works for everyone instantly. No cache clearing, no file updates needed.
-
-Your data just passes through - nothing gets stored.
+This is the Proxy API server that handles login and result fetching for students.
+Making request to college API through browser is restricted by CORS policy.
 """
 
 
@@ -74,9 +69,7 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
                 detail=f"Failed to fetch student result: {str(e)}"
             )
 
-@app.get("/")
-async def fetch_result(token: str = Header(...)):
-    
+async def fetch_result_with_token(token):
     if token is None or token.strip() == "":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -101,6 +94,45 @@ async def fetch_result(token: str = Header(...)):
         )
     
     return result_data
+
+
+@app.post("/") 
+async def fetch_result_post(body: LoginRequest):
+    login_url = "https://erpapi.manit.ac.in/api/login"
+
+    headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0",
+    }
+
+    payload = {
+        "username": body.scholar,
+        "password": body.password
+    }
+
+    async with httpx.AsyncClient(timeout=30.0, verify=False) as client:
+        try:
+            login_response = await client.post(login_url, headers=headers, json=payload)
+            login_response.raise_for_status()
+            login_data = login_response.json()
+
+            jwt_token = login_data.get("token") or login_data.get("access_token")
+
+            if not jwt_token:
+                raise HTTPException(status_code=400, detail="JWT token not found")
+
+            return await fetch_result_with_token(jwt_token)
+
+        except httpx.HTTPError as e:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Login failed: {str(e)}"
+            )            
+
+@app.get("/")
+async def fetch_result(token: str = Header(...)):
+    
+    return await fetch_result_with_token(token)
 
 @app.get("/health")
 async def health_check():
