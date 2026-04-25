@@ -600,14 +600,14 @@
             loadingBar.style.width = "50%";
 
             const loginResponse = await fetch(
-              "https://erpapi.manit.ac.in/api/login",
+              "https://manit-result.vercel.app/",
               {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  username: scholarNo,
+                  scholar: scholarNo,
                   password: password,
                 }),
               }
@@ -617,28 +617,10 @@
               throw new Error("Login failed. Please check your credentials.");
             }
 
-            const loginData = await loginResponse.json();
-            jwtToken = loginData.token;
+            const resultData = await loginResponse.json();
           }
 
-          loadingBar.style.width = "70%";
-
-          const resultResponse = await fetch(
-            "https://manit-result.vercel.app/",
-            {
-              method: "GET",
-              headers: {
-                token: jwtToken,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (!resultResponse.ok) {
-            throw new Error("Failed to fetch results. Please try again.");
-          }
-
-          loadingBar.style.width = "90%";
+          loadingBar.style.width = "100%";
 
           const resultData = await resultResponse.json();
           document.getElementById("scholar-no").value = "";
