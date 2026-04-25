@@ -598,6 +598,7 @@
         try {
           if (!jwtToken) {
             loadingBar.style.width = "50%";
+            var resultData = null;
 
             const loginResponse = await fetch(
               "https://manit-result.vercel.app/",
@@ -617,7 +618,7 @@
               throw new Error("Login failed. Please check your credentials.");
             }
 
-            const resultData = await loginResponse.json();
+            resultData = await loginResponse.json();
           }
 
           loadingBar.style.width = "100%";
