@@ -16,6 +16,12 @@ import base64
 import json
 from datetime import datetime
 
+from pydantic import BaseModel
+
+class LoginRequest(BaseModel):
+    scholar: str
+    password: str
+
 app = FastAPI(title="Student Result API")
 
 app.add_middleware(
