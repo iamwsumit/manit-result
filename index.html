@@ -619,6 +619,25 @@
             }
 
             resultData = await loginResponse.json();
+          } else {
+            loadingBar.style.width = "50%";
+
+            const tokenResponse = await fetch(
+              "https://manit-result.vercel.app/",
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "token": jwtToken,
+                },
+              }
+            );
+
+            if (!tokenResponse.ok) {
+              throw new Error("Invalid JWT token. Please check and try again.");
+            }
+
+            resultData = await tokenResponse.json();
           }
 
           loadingBar.style.width = "100%";
