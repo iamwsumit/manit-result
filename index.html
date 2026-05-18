@@ -1,761 +1,971 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Marks Portal</title>
-
   <meta property="og:title" content="Student Marks Portal - View Your Results" />
-  <meta property="og:description"
-    content="A secure way to access and view your semester results and academic performance. Check your grades, marks, and SGPA with ease." />
+  <meta property="og:description" content="A secure way to access and view your semester results and academic performance." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://manitfirst.web.app/assets/manit.png" />
   <meta property="og:url" content="https://iamwsumit.github.io/manit-result/" />
-
-  <link rel="stylesheet" href="common.css">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap");
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", "Rubik", Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .stats-button {
-      background: var(--primary-color);
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 10px;
-    }
-
-    .stats-info-section {
-      background: var(--card-color);
-      border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      padding: 15px;
-      margin-top: 15px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-info-section h3 {
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-      color: var(--text-color);
-    }
-
-    .stats-info-section p {
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-      color: var(--text-color);
-    }
-
     :root {
-      --primary-color: #3498db;
-      --secondary-color: #2ecc71;
-      --accent-color: #f39c12;
-      --background-color: #f8f9fa;
-      --card-color: #ffffff;
-      --text-color: #333333;
-      --error-color: #e74c3c;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --blue-mid: #dbeafe;
+      --green: #16a34a;
+      --amber: #d97706;
+      --red: #dc2626;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --white: #ffffff;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 12px 40px rgba(0,0,0,0.10);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: var(--background-color);
-      color: var(--text-color);
+      font-family: 'DM Sans', sans-serif;
+      background: var(--slate-50);
+      color: var(--slate-800);
       min-height: 100vh;
-      padding: 2rem;
+      padding: 2rem 1rem 5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    .container {
+    .page-wrap {
       width: 100%;
-      max-width: 900px;
+      max-width: 680px;
     }
 
     .header {
       text-align: center;
       margin-bottom: 2rem;
+      padding-top: 1rem;
+    }
+
+    .header .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-light);
+      border: 1px solid var(--blue-mid);
+      border-radius: 999px;
+      padding: 5px 14px 5px 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--blue);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .header .logo-badge span.dot {
+      width: 8px;
+      height: 8px;
+      background: var(--blue);
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .header h1 {
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
     }
+
+    .header p {
+      font-size: 0.95rem;
+      color: var(--slate-500);
+    }
+
+    .alert-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid var(--amber);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .alert-box svg { flex-shrink: 0; margin-top: 1px; }
+
+    .alert-box p {
+      font-size: 0.875rem;
+      color: #92400e;
+      line-height: 1.55;
+    }
+
+    .alert-box strong { font-weight: 600; }
 
     .card {
-      background-color: var(--card-color);
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--slate-200);
       padding: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .tabs {
-      display: flex;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .tab {
-      padding: 0.75rem 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-bottom: 2px solid transparent;
-    }
-
-    .tab.active {
-      border-bottom: 2px solid var(--primary-color);
-      color: var(--primary-color);
-      font-weight: bold;
-    }
-
-    .form-section {
-      display: none;
-    }
-
-    .form-section.active {
-      display: block;
-    }
-
-    .form-group {
       margin-bottom: 1.5rem;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .recommended {
-      display: inline-block;
-      background-color: var(--accent-color);
-      color: white;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-left: 0.5rem;
-    }
-
-    .token-extraction {
-      background-color: rgba(0, 0, 0, 0.05);
-      padding: 0.75rem;
-      border-radius: 5px;
-      font-family: monospace;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      transition: border 0.3s;
+    .card-title {
       font-size: 1rem;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary-color);
-      outline: none;
-    }
-
-    .btn {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn:hover {
-      background-color: #2980b9;
-    }
-
-    .btn-loading .btn-text {
-      visibility: hidden;
-    }
-
-    .loading-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
-      background-color: rgba(255, 255, 255, 0.3);
-      transition: width 0.3s linear;
-    }
-
-    .disclaimer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #777;
-      margin-top: 1rem;
-    }
-
-    .error-message {
-      color: var(--error-color);
-      margin-top: 1rem;
-      padding: 0.75rem;
-      background-color: rgba(231, 76, 60, 0.1);
-      border-radius: 5px;
-      display: none;
-    }
-
-    .report-card {
-      background-color: var(--card-color);
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-top: 2rem;
-      display: none;
-    }
-
-    .student-info {
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid #e0e0e0;
-      padding-bottom: 1rem;
-    }
-
-    .student-info h3 {
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-    }
-
-    .student-info p {
-      margin-bottom: 0.5rem;
-    }
-
-    .semester-selector {
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .semester-selector label {
-      font-weight: 500;
-      margin-bottom: 0;
-    }
-
-    .semester-dropdown {
-      flex: 1;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    .semester-dropdown:focus {
-      border-color: var(--primary-color);
-      outline: none;
-    }
-
-    .marks-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1.5rem;
-    }
-
-    .marks-table th,
-    .marks-table td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .marks-table th {
-      background-color: rgba(52, 152, 219, 0.1);
-      font-weight: 600;
-    }
-
-    .marks-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .grade-A {
-      color: #27ae60;
-    }
-
-    .grade-B {
-      color: #2980b9;
-    }
-
-    .grade-C {
-      color: #f39c12;
-    }
-
-    .grade-D,
-    .grade-F {
-      color: #e74c3c;
-    }
-
-    .summary {
-      margin-top: 1.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .summary p {
-      margin-bottom: 0.5rem;
-    }
-
-    .print-btn {
-      background-color: var(--secondary-color);
-      margin-top: 1rem;
-      display: inline-block;
-    }
-
-    .print-btn:hover {
-      background-color: #27ae60;
-    }
-
-    @media print {
-      body {
-        padding: 0;
-        background-color: white;
-      }
-
-      .container {
-        max-width: 100%;
-      }
-
-      .card,
-      .header {
-        display: none;
-      }
-
-      .report-card {
-        display: block !important;
-        box-shadow: none;
-        padding: 0;
-      }
-
-      .print-btn {
-        display: none;
-      }
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-      }
-
-      .card {
-        padding: 1.5rem;
-      }
-
-      .tab {
-        padding: 0.5rem 1rem;
-      }
-    }
-
-    .info-box {
-      margin-top: 30px;
-      padding: 24px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border-left: 4px solid #2196f3;
-    }
-
-    .info-box h3 {
-      color: #333;
-      margin-bottom: 10px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 1.25rem;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .info-box p {
-      color: #666;
+    .card-title .step-num {
+      width: 24px;
+      height: 24px;
+      background: var(--blue);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .snippet-block {
+      background: var(--slate-900);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .snippet-block code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: #86efac;
+      flex: 1;
+      word-break: break-all;
       line-height: 1.6;
     }
 
-    button.secondary {
+    .copy-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+    .copy-btn.copied { background: rgba(22,163,74,0.3); border-color: rgba(22,163,74,0.5); }
+
+    .platform-tabs {
+      display: flex;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .platform-tab {
+      flex: 1;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      background: var(--slate-50);
+      color: var(--slate-500);
+      border: none;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .platform-tab:not(:last-child) { border-right: 1px solid var(--slate-200); }
+    .platform-tab.active { background: var(--blue); color: white; }
+
+    .platform-instructions { display: none; }
+    .platform-instructions.active { display: block; }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-left:10px;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 0.875rem;
+      color: var(--slate-600);
+      line-height: 1.55;
+    }
+
+    .steps-list li .n {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .steps-list li code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      background: var(--slate-100);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--slate-700);
+    }
+
+    .note-inline {
+      background: var(--blue-light);
+      border: 1px solid var(--blue-mid);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #1d4ed8;
+      margin-top: 1rem;
+      line-height: 1.55;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--slate-200);
+      margin: 1.5rem 0;
+    }
+
+    .manual-section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--slate-400);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .input-group { margin-bottom: 1.25rem; }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 16px;
-      background: white;
-      color: #2196f3;
-      border: 2px solid #2196f3;
-      border-radius: 8px;
-      font-size: 1rem;
+      padding: 10px 14px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--slate-800);
+      background: var(--white);
+      transition: border-color 0.15s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.15s;
+      letter-spacing: -0.01em;
     }
 
-    button.secondary:hover {
-      background: #2196f3;
-      color: white;
+    .submit-btn:hover { background: #1d4ed8; }
+    .submit-btn .btn-text { position: relative; z-index: 1; }
+    .submit-btn .loading-bar {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 0%;
+      background: rgba(255,255,255,0.2);
+      transition: width 0.3s linear;
     }
+
+    .submit-btn.loading .btn-text { opacity: 0; }
+
+    .error-msg {
+      display: none;
+      margin-top: 1rem;
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      color: var(--red);
+    }
+
+    .privacy-note {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--slate-400);
+      text-align: center;
+    }
+
+    .privacy-note a { color: var(--blue); text-decoration: none; }
+    .privacy-note a:hover { text-decoration: underline; }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--slate-400);
+    }
+
+    .contact-row a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .contact-row a:hover { text-decoration: underline; }
+
+    .report-card {
+      display: none;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--slate-200);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .student-info { margin-bottom: 1.5rem; }
+
+    .student-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 0.75rem;
+    }
+
+    .student-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .meta-item {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+
+    .meta-item .meta-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-400);
+      margin-bottom: 2px;
+    }
+
+    .meta-item .meta-val {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--slate-800);
+    }
+
+    .sem-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .sem-selector label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      flex-shrink: 0;
+    }
+
+    .sem-selector select {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--slate-800);
+      background: white;
+      cursor: pointer;
+    }
+
+    .sem-selector select:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .marks-table th {
+      background: var(--slate-50);
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-500);
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .marks-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--slate-100);
+      color: var(--slate-700);
+    }
+
+    .marks-table tr:last-child td { border-bottom: none; }
+
+    .grade-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 24px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .grade-O, .grade-A { background: #dcfce7; color: #15803d; }
+    .grade-B { background: #dbeafe; color: #1d4ed8; }
+    .grade-C { background: #fef9c3; color: #854d0e; }
+    .grade-D, .grade-F { background: #fee2e2; color: #b91c1c; }
+
+    .summary-strip {
+      border-radius: var(--radius-sm);
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .summary-strip .s-item .s-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-400);
+      margin-bottom: 2px;
+    }
+
+    .summary-strip .s-item .s-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    .print-btn {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 10px;
+      background: white;
+      color: var(--slate-700);
+      border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .print-btn:hover {
+      background: var(--slate-50);
+      border-color: var(--slate-300);
+    }
+
+    .dev-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .badge-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 999px;
+      padding: 6px 14px 6px 6px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .badge-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--blue);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .badge-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .badge-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--slate-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate-800);
+    }
+
+    .badge-socials {
+      display: flex;
+      gap: 6px;
+      margin-left: 4px;
+    }
+
+    .social-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .social-icon:hover { opacity: 0.8; }
+    .social-icon svg { width: 13px; height: 13px; fill: currentColor; }
+    .social-icon.github { background: #1a1a1a; }
+    .social-icon.linkedin { background: #0077b5; }
+    .social-icon.email { background: #ea4335; }
+
+    @media (max-width: 600px) {
+      .student-meta { grid-template-columns: 1fr 1fr; }
+      .badge-inner { padding: 5px 10px 5px 5px; gap: 7px; }
+      .badge-socials { gap: 4px; }
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+        display: block;
+      }
+
+      .page-wrap { max-width: 100%; }
+      .header, .alert-box, .card { display: none !important; }
+
+      .report-card {
+        display: block !important;
+        box-shadow: none;
+        border: none;
+        padding: 24px;
+        margin: 0;
+      }
+
+      .print-btn { display: none !important; }
+
+      .dev-badge { display: none !important; }
+
+      .print-footer {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 24px;
+        padding-top: 14px;
+        border-top: 1px solid var(--slate-200);
+        font-size: 0.78rem;
+        color: var(--slate-400);
+      }
+
+      .print-footer .pf-dev {
+        font-weight: 600;
+        color: var(--slate-600);
+      }
+    }
+
+    .print-footer { display: none; }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Student Marks Portal</h1>
-      <p>View your semester results securely</p>
+
+<div class="page-wrap">
+  <div class="header">
+    <div class="logo-badge"><span class="dot"></span>MANIT Bhopal</div>
+    <h1>Student Marks Portal</h1>
+    <p>View your semester results securely</p>
+  </div>
+
+  <div class="alert-box">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#d97706" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+    <p><strong>Login method discontinued.</strong> Due to recent security changes (Google reCAPTCHA) on the MANIT student portal, direct login is no longer possible. Please follow the steps below to access your results using the JWT token method.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="step-num">1</span>
+      Copy the snippet below
+    </div>
+    <div class="snippet-block">
+      <code id="js-snippet">(function(){if(window.location.hostname!=="students.manit.ac.in"){alert("Please paste this code only on students.manit.ac.in after logging in.");return;}const token=localStorage.getItem("token");if(!token){alert("You are not logged in. Please login to the student portal first.");return;}window.open("https://iamwsumit.github.io/manit-result/?token="+encodeURIComponent(token),"_blank");})();</code>
+      <button class="copy-btn" id="copy-btn">Copy</button>
     </div>
 
-    <div class="card">
-      <div class="tabs">
-        <div class="tab active" data-tab="login">Login with Credentials</div>
-        <div class="tab" data-tab="token">Use JWT Token</div>
-      </div>
-
-      <div class="form-section active" id="login-section">
-
-        <div style="padding-bottom: 22px;">
-            <div class="info-box">
-              <h3>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" width="20" height="20">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.867a.563.563 0 00-.204.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.487a.563.563 0 00-.523 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.385a.563.563 0 00-.204-.557L3.253 9.386c-.38-.325-.178-.948.32-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                </svg>
-                Important Notice
-              </h3>
-              <p>
-                Due to recent security changes on the student portal, login with credentials is currently not working.
-                Please use the JWT token method for a secure and seamless experience until the issue is resolved.
-              </p>
-            </div>
-        </div>
-
-        <div class="form-group">
-          <label for="scholar-no">Scholar Number</label>
-          <input type="text" id="scholar-no" class="form-control" placeholder="Enter your scholar number" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" class="form-control" placeholder="Enter your password" />
-        </div>
-      </div>
-
-      <div class="form-section" id="token-section">
-        <div class="form-group">
-          <label for="jwt-token">JWT Token <span class="recommended">Recommended</span></label>
-          <input type="text" id="jwt-token" class="form-control" placeholder="Paste your JWT token here" />
-          <div class="token-extraction">localStorage.getItem('token')</div>
-          <p style="font-size: 0.9rem; margin-top: 0.5rem">
-            Run the above code in console of student portal website to get
-            your JWT token.
-          </p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <button id="show-marks-btn" class="btn">
-          <div class="loading-bar" id="loading-bar"></div>
-          <span class="btn-text">Show Marks</span>
-        </button>
-      </div>
-
-      <div class="error-message" id="error-message"></div>
-      <div
-        style="padding: 12px; background-color: #f9fafb; border-left: 3px solid #6b7280; margin: 20px 0; font-family: system-ui, -apple-system, sans-serif;">
-        <p style="margin: 0; color: #4b5563; font-size: 14px; line-height: 1.5;">
-          This site does not store any credentials or personal data.
-          <a href="https://github.com/iamwsumit/manit-result" target="_blank"
-            style="color: #2563eb; text-decoration: none;">View source code</a>
-        </p>
-      </div>
+    <div class="card-title" style="margin-top: 1.5rem;">
+      <span class="step-num">2</span>
+      Paste it on the student portal
     </div>
 
+    <div class="platform-instructions active">
+      <ul class="steps-list">
+        <li><span class="n">></span><span>Log in to the MANIT student portal at <code>student.manit.ac.in</code></span></li>
+        <li><span class="n">></span><span>Click the address bar at the top of your browser.</span></li>
+        <li><span class="n">></span><span>Paste the copied snippet in the address bar.</span></li>
+        <li><span class="n">></span><span>Move the cursor to the start of the snippet in address bar and type <code>javascript:</code></span></li>
+        <li><span class="n">></span><span>Press <code>Enter</code>, make sure you are hitting Enter on globe icon (marked in picture below).</span></li>
+        <li><span class="n">></span><span>You'll be redirected here automatically with your results loaded.</span></li>
+      </ul>
+
+      <div style="padding: 12px; margin-top: 12px">
+        <img src="https://raw.githubusercontent.com/iamwsumit/manit-result/refs/heads/main/instructions.png" alt="Instructions" style="width:100%; border-radius: var(--radius-sm); box-shadow: var(--shadow); border: 1px solid var(--slate-200);" />
+      </div>
+
+      <div class="contact-row">
+      Need help?
+      <a href="https://t.me/iamwsumit" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#2563eb"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Contact me on Telegram
+      </a>
+    </div>
+    </div>
 
   </div>
 
-  <div class="dev-badge">
-    <div class="badge-inner">
-      <div class="badge-avatar">SK</div>
-      <div class="badge-content">
-        <span class="badge-label">Developed by</span>
-        <span class="badge-name">Sumit Kumar</span>
-      </div>
-      <div class="badge-socials">
-        <a href="https://github.com/iamwsumit" target="_blank" class="social-icon github" data-tooltip="GitHub">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-          </svg>
-        </a>
-        <a href="https://linkedin.com/in/iamwsumit" target="_blank" class="social-icon linkedin"
-          data-tooltip="LinkedIn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
-        </a>
-        <a href="mailto:me@sumitkmr.com" class="social-icon email" data-tooltip="Email">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-          </svg>
-        </a>
-      </div>
+  <div class="card">
+    <div class="card-title">
+      <span class="step-num">3</span>
+      Or paste your JWT token manually
     </div>
-  </div>
+    <p style="font-size: 0.85rem; color: var(--slate-500); margin-bottom: 1.25rem;">If the redirect didn't work, run <code style="font-family:'DM Mono',monospace; font-size:0.8rem; background:var(--slate-100); padding:2px 6px; border-radius:4px;">localStorage.getItem('token')</code> in the browser console on the student portal and paste the result below.</p>
 
-  <div class="report-card" id="report-card">
-    <div class="student-info" id="student-info"></div>
-
-    <div class="semester-selector">
-      <label for="semester-select">Select Semester:</label>
-      <select id="semester-select" class="semester-dropdown"></select>
+    <div class="input-group">
+      <label for="jwt-token">JWT Token</label>
+      <input type="text" id="jwt-token" placeholder="Paste your JWT token here…" autocomplete="off" spellcheck="false"/>
     </div>
 
-    <table class="marks-table" id="marks-table">
-      <thead>
-        <tr>
-          <th>Subject</th>
-          <th>Total Marks</th>
-          <th>Mid Term</th>
-          <th>End Term</th>
-          <th>Grade</th>
-        </tr>
-      </thead>
-      <tbody id="marks-table-body"></tbody>
-    </table>
+    <button class="submit-btn" id="show-marks-btn">
+      <div class="loading-bar" id="loading-bar"></div>
+      <span class="btn-text">Show My Results</span>
+    </button>
 
-    <div class="summary" id="summary"></div>
+    <div class="error-msg" id="error-message"></div>
 
-    <button class="btn print-btn" id="print-btn">Print Report Card</button>
+    <div class="privacy-note">
+      This site does not store any credentials or personal data. &nbsp;
+      <a href="https://github.com/iamwsumit/manit-result" target="_blank">View source code</a>
+    </div>
+    
   </div>
+</div>
+
+<div class="report-card" id="report-card">
+  <div class="student-info" id="student-info"></div>
+
+  <div class="sem-selector">
+    <label for="semester-select">Semester:</label>
+    <select id="semester-select"></select>
   </div>
 
-  <script>
-    let allResultData = null;
+  <table class="marks-table" id="marks-table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Total</th>
+        <th>Mid Term</th>
+        <th>End Term</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody id="marks-table-body"></tbody>
+  </table>
 
+  <div class="summary-strip" id="summary"></div>
 
-    document.querySelectorAll(".tab").forEach((tab) => {
-      tab.addEventListener("click", () => {
+  <button class="print-btn" id="print-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+    </svg>
+    Print Report Card
+  </button>
 
-        document
-          .querySelectorAll(".tab")
-          .forEach((t) => t.classList.remove("active"));
-        document
-          .querySelectorAll(".form-section")
-          .forEach((s) => s.classList.remove("active"));
+  <div class="print-footer">
+    <span>MANIT Bhopal — Student Result</span>
+    <span class="pf-dev">Generated via <a href="https://iamwsumit.github.io/manit-result/" target="_blank">Student Marks Portal</a> &nbsp;·&nbsp; Developed by <a href="https://linkedin.com/in/iamwsumit" target="_blank">Sumit Kumar (ME '28)</a></span>
+  </div>
+</div>
 
-        tab.classList.add("active");
-        document
-          .getElementById(`${tab.dataset.tab}-section`)
-          .classList.add("active");
-      });
+<div class="dev-badge">
+  <div class="badge-inner">
+    <div class="badge-avatar">SK</div>
+    <div class="badge-content">
+      <span class="badge-label">Developed by</span>
+      <span class="badge-name">Sumit Kumar</span>
+    </div>
+    <div class="badge-socials">
+      <a href="https://github.com/iamwsumit" target="_blank" class="social-icon github">
+        <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/iamwsumit" target="_blank" class="social-icon linkedin">
+        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="mailto:me@sumitkmr.com" class="social-icon email">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allResultData = null;
+
+  const JS_SNIPPET = `(function(){if(window.location.hostname!=="students.manit.ac.in"){alert("Please paste this code only on students.manit.ac.in after logging in.");return;}const token=localStorage.getItem("token");if(!token){alert("You are not logged in. Please login to the student portal first.");return;}window.open("https://iamwsumit.github.io/manit-result/?token="+encodeURIComponent(token),"_blank");})();`;
+
+  document.querySelectorAll('.platform-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.platform-instructions').forEach(i => i.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('p-' + tab.dataset.p).classList.add('active');
     });
+  });
 
-    const showMarksBtn = document.getElementById("show-marks-btn");
-    const loadingBar = document.getElementById("loading-bar");
-    const errorMessage = document.getElementById("error-message");
-    const reportCard = document.getElementById("report-card");
-    const semesterSelect = document.getElementById("semester-select");
-
-    semesterSelect.addEventListener("change", function () {
-      const selectedSemester = this.value;
-      displaySemesterData(selectedSemester);
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(JS_SNIPPET).then(() => {
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
     });
+  });
 
-    showMarksBtn.addEventListener("click", async () => {
-      errorMessage.style.display = "none";
+  const showMarksBtn = document.getElementById('show-marks-btn');
+  const loadingBar = document.getElementById('loading-bar');
+  const errorMsg = document.getElementById('error-message');
+  const semesterSelect = document.getElementById('semester-select');
 
-      const scholarNo = document.getElementById("scholar-no").value;
-      const password = document.getElementById("password").value;
-      let jwtToken = document.getElementById("jwt-token").value;
+  semesterSelect.addEventListener('change', function () {
+    displaySemesterData(this.value);
+  });
 
-      if (!jwtToken && (!scholarNo || !password)) {
-        errorMessage.textContent =
-          "Please provide either login credentials or JWT token";
-        errorMessage.style.display = "block";
-        return;
-      }
+  async function fetchResults(token) {
+    errorMsg.style.display = 'none';
+    showMarksBtn.classList.add('loading');
+    loadingBar.style.width = '40%';
 
-      showMarksBtn.classList.add("btn-loading");
-      loadingBar.style.width = "30%";
-
-      try {
-        if (!jwtToken) {
-          loadingBar.style.width = "50%";
-          var resultData = null;
-
-          const loginResponse = await fetch(
-            "https://manit-result.vercel.app/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                scholar: scholarNo,
-                password: password,
-              }),
-            }
-          );
-
-          if (!loginResponse.ok) {
-            throw new Error("Login failed. Please check your credentials.");
-          }
-
-          resultData = await loginResponse.json();
-        } else {
-          loadingBar.style.width = "50%";
-
-          const tokenResponse = await fetch(
-            "https://manit-result.vercel.app/",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "token": jwtToken,
-              },
-            }
-          );
-
-          if (!tokenResponse.ok) {
-            throw new Error("Invalid JWT token. Please check and try again.");
-          }
-
-          resultData = await tokenResponse.json();
-        }
-
-        loadingBar.style.width = "100%";
-
-        document.getElementById("scholar-no").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("jwt-token").value = "";
-
-        allResultData = resultData;
-
-        populateSemesterDropdown(resultData);
-
-        if (
-          resultData.data.Semester_Data &&
-          resultData.data.Semester_Data.length > 0
-        ) {
-          displayResults(resultData);
-        }
-
-        loadingBar.style.width = "100%";
-        setTimeout(() => {
-          showMarksBtn.classList.remove("btn-loading");
-          loadingBar.style.width = "0%";
-        }, 500);
-      } catch (error) {
-        console.error("Error:", error);
-        errorMessage.textContent =
-          error.message || "An unexpected error occurred. Please try again.";
-        errorMessage.style.display = "block";
-
-        showMarksBtn.classList.remove("btn-loading");
-        loadingBar.style.width = "0%";
-      }
-    });
-
-    document.getElementById("print-btn").addEventListener("click", () => {
-      window.print();
-    });
-
-    function populateSemesterDropdown(resultData) {
-      semesterSelect.innerHTML = "";
-
-      if (resultData.data && resultData.data.Semester_Data) {
-        const semesterData = resultData.data.Semester_Data;
-
-        semesterData.forEach((semester, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent =
-            semester.data.semester_term || `Semester ${index + 1}`;
-          semesterSelect.appendChild(option);
-        });
-      }
-    }
-
-    function displaySemesterData(semesterIndex) {
-      if (
-        allResultData &&
-        allResultData.data &&
-        allResultData.data.Semester_Data
-      ) {
-        const semesterData = allResultData.data.Semester_Data[semesterIndex];
-        if (semesterData) {
-          updateResultsDisplay(semesterData);
-        }
-      }
-    }
-
-    function updateResultsDisplay(semesterData) {
-      const data = semesterData.data;
-      const bd = allResultData.data.Basic_Details[0];
-      const total = data.grand_total;
-
-      const marksTableBody = document.getElementById("marks-table-body");
-      marksTableBody.innerHTML = "";
-
-      data.subjects.forEach((subject) => {
-        const row = document.createElement("tr");
-        const gradeClass = `grade-${subject.grade.charAt(0)}`;
-
-        row.innerHTML = `
-            <td>${subject.subname}</td>
-            <td>${subject.marks_obtained}/${subject.total_marks}</td>
-            <td>${subject.mid_term_marks}/${subject.total_mid_term_marks}</td>
-            <td>${subject.end_term_marks}/${subject.total_end_term_marks}</td>
-            <td class="${gradeClass}">${subject.grade}</td>
-          `;
-
-        marksTableBody.appendChild(row);
+    try {
+      const res = await fetch('https://manit-result.vercel.app/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'token': token }
       });
 
-      const summary = document.getElementById("summary");
-      summary.innerHTML = `
-          <p><strong>Grand Total:</strong> ${total.marks_obtained}/${total.total_marks}</p>
-          <p><strong>SGPA:</strong> ${total.sgpa}</p>
-        `;
+      if (!res.ok) throw new Error('Invalid or expired token. Please get a fresh one from the portal.');
+
+      const data = await res.json();
+      loadingBar.style.width = '100%';
+      allResultData = data;
+      populateSemesterDropdown(data);
+      if (data.data.Semester_Data && data.data.Semester_Data.length > 0) {
+        displayResults(data);
+      }
+    } catch (err) {
+      errorMsg.textContent = err.message || 'An unexpected error occurred. Please try again.';
+      errorMsg.style.display = 'block';
+    } finally {
+      setTimeout(() => {
+        showMarksBtn.classList.remove('loading');
+        loadingBar.style.width = '0%';
+      }, 400);
     }
+  }
 
-    function displayResults(data) {
-      const bd = data.data.Basic_Details[0];
-      const firstSemesterData = data.data.Semester_Data[0].data;
-
-      const studentInfo = document.getElementById("student-info");
-      studentInfo.innerHTML = `
-          <h3>Student Report Card</h3>
-          <p><strong>Name:</strong> ${bd.full_name}</p>
-          <p><strong>Scholar No:</strong> ${bd.roll_no}</p>
-          <p><strong>Branch:</strong> ${bd.department_name}</p>
-        `;
-
-      updateResultsDisplay(data.data.Semester_Data[0]);
-
-      reportCard.style.display = "block";
-      reportCard.style.marginBottom = "4rem";
-
-      reportCard.scrollIntoView({ behavior: "smooth" });
+  showMarksBtn.addEventListener('click', async () => {
+    const token = document.getElementById('jwt-token').value.trim();
+    if (!token) {
+      errorMsg.textContent = 'Please paste your JWT token first.';
+      errorMsg.style.display = 'block';
+      return;
     }
-  </script>
+    await fetchResults(token);
+    document.getElementById('jwt-token').value = '';
+  });
+
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+  function populateSemesterDropdown(resultData) {
+    semesterSelect.innerHTML = '';
+    if (resultData.data && resultData.data.Semester_Data) {
+      resultData.data.Semester_Data.forEach((sem, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = sem.data.semester_term || `Semester ${i + 1}`;
+        semesterSelect.appendChild(opt);
+      });
+    }
+  }
+
+  function displaySemesterData(index) {
+    if (allResultData && allResultData.data && allResultData.data.Semester_Data) {
+      const sem = allResultData.data.Semester_Data[index];
+      const cgpa = allResultData.data.FINAL_CGPA[index];
+      if (sem && cgpa) updateResultsDisplay(sem, cgpa);
+    }
+  }
+
+  function updateResultsDisplay(semesterData, cgpa) {
+    const data = semesterData.data;
+    const total = data.grand_total;
+    const tbody = document.getElementById('marks-table-body');
+    tbody.innerHTML = '';
+
+    data.subjects.forEach(sub => {
+      const row = document.createElement('tr');
+      const g = sub.grade.charAt(0);
+      row.innerHTML = `
+        <td>${sub.subname}</td>
+        <td>${sub.marks_obtained}/${sub.total_marks}</td>
+        <td>${sub.mid_term_marks}/${sub.total_mid_term_marks}</td>
+        <td>${sub.end_term_marks}/${sub.total_end_term_marks}</td>
+        <td><span class="grade-chip grade-${g}">${sub.grade}</span></td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById('summary').innerHTML = `
+      <div class="s-item meta-item"><div class="s-label">Grand Total</div><div class="s-val">${total.marks_obtained}/${total.total_marks}</div></div>
+      <div class="s-item meta-item"><div class="s-label">SGPA</div><div class="s-val">${total.sgpa}</div></div>
+      <div class="s-item meta-item"><div class="s-label">CGPA</div><div class="s-val">${cgpa}</div></div>
+    `;
+  }
+
+  function displayResults(data) {
+    const bd = data.data.Basic_Details[0];
+    document.getElementById('student-info').innerHTML = `
+      <h3>Report Card</h3>
+      <div class="student-meta">
+        <div class="meta-item"><div class="meta-label">Name</div><div class="meta-val">${bd.full_name}</div></div>
+        <div class="meta-item"><div class="meta-label">Scholar No.</div><div class="meta-val">${bd.roll_no}</div></div>
+        <div class="meta-item"><div class="meta-label">Branch</div><div class="meta-val">${bd.department_name}</div></div>
+      </div>
+    `;
+    updateResultsDisplay(data.data.Semester_Data[0], data.data.FINAL_CGPA[0]);
+    const rc = document.getElementById('report-card');
+    rc.style.display = 'block';
+    rc.style.marginBottom = '4rem';
+    rc.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  (function checkUrlToken() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      fetchResults(token);
+    }
+  })();
+</script>
 </body>
-
 </html>
