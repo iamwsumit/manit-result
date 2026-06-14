@@ -674,6 +674,35 @@
     }
 
     .print-footer { display: none; }
+
+    .input-group select#branch-select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--slate-700, #334155);
+  background-color: #fff;
+  border: 1px solid var(--slate-200, #e2e8f0);
+  border-radius: 8px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group select#branch-select:focus {
+  outline: none;
+  border-color: var(--slate-400, #94a3b8);
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15);
+}
+
+.input-group select#branch-select option {
+  font-family: 'DM Mono', monospace;
+  color: var(--slate-700, #334155);
+}
   </style>
 </head>
 <body>
@@ -698,7 +727,7 @@
       Copy the snippet below
     </div>
     <div class="snippet-block">
-      <code id="js-snippet">(function(){if(window.location.hostname!=="students.manit.ac.in"){alert("Please paste this code only on students.manit.ac.in after logging in.");return;}const token=localStorage.getItem("token");if(!token){alert("You are not logged in. Please login to the student portal first.");return;}window.open("https://iamwsumit.github.io/manit-result/?token="+encodeURIComponent(token),"_blank");})();</code>
+      <code id="js-snippet">(function(){if(window.location.hostname!=="students.manit.ac.in"){alert("Please paste this code only on students.manit.ac.in after logging in.");return;}const token=localStorage.getItem("token");const user=JSON.parse(localStorage.getItem("user")||"{}");const programId=user?.userInfo?.studentInfo?.[0]?.program_master_id||"";if(!token){alert("You are not logged in. Please login to the student portal first.");return;}window.open("https://iamwsumit.github.io/manit-result/?token="+encodeURIComponent(token)+"&program="+encodeURIComponent(programId),"_blank");})();</code>
       <button class="copy-btn" id="copy-btn">Copy</button>
     </div>
 
@@ -732,7 +761,7 @@
 
   </div>
 
-  <div class="card">
+<div class="card">
     <div class="card-title">
       <span class="step-num">3</span>
       Or paste your JWT token manually
@@ -742,6 +771,21 @@
     <div class="input-group">
       <label for="jwt-token">JWT Token</label>
       <input type="text" id="jwt-token" placeholder="Paste your JWT token here…" autocomplete="off" spellcheck="false"/>
+    </div>
+
+    <div class="input-group">
+      <label for="branch-select">Branch</label>
+      <select id="branch-select">
+        <option value="">Select your branch…</option>
+        <option value="73">Computer Science Engineering</option>
+        <option value="80">Mechanical Engineering</option>
+        <option value="81">Civil Engineering</option>
+        <option value="77">Electronics & Communication Engineering</option>
+        <option value="75">Electrical Engineering</option>
+        <option value="73">Architecture & Planning</option>
+        <option value="83">Materials & Metallurgical Engineering</option>
+        <option value="74">Chemical Engineering</option>
+      </select>
     </div>
 
     <button class="submit-btn" id="show-marks-btn">
@@ -851,13 +895,13 @@
     displaySemesterData(this.value);
   });
 
-  async function fetchResults(token) {
+  async function fetchResults(token, programID = 80) {
     errorMsg.style.display = 'none';
     showMarksBtn.classList.add('loading');
     loadingBar.style.width = '40%';
 
     try {
-      const res = await fetch('https://manit-result.vercel.app/', {
+      const res = await fetch(`https://manit-result.vercel.app/${programID}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'token': token }
       });
@@ -884,12 +928,18 @@
 
   showMarksBtn.addEventListener('click', async () => {
     const token = document.getElementById('jwt-token').value.trim();
+    const programId = document.getElementById('branch-select').value;
     if (!token) {
       errorMsg.textContent = 'Please paste your JWT token first.';
       errorMsg.style.display = 'block';
       return;
     }
-    await fetchResults(token);
+    if (!programId) {
+      errorMsg.textContent = 'Please select your branch.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+    await fetchResults(token, programId);
     document.getElementById('jwt-token').value = '';
   });
 
@@ -961,9 +1011,10 @@
   (function checkUrlToken() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    const programID = params.get('programID') || 80;
     if (token) {
       window.history.replaceState({}, document.title, window.location.pathname);
-      fetchResults(token);
+      fetchResults(token, programID);
     }
   })();
 </script>

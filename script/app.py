@@ -46,7 +46,7 @@ def decode_jwt_payload(jwt_token: str) -> dict:
             detail=f"Failed to decode JWT token: {str(e)}"
         )
 
-async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
+async def fetch_student_result(jwt_token: str, student_uid: str, programID: int = 80) -> dict:
     
     url = "https://erpapi.manit.ac.in/api/student_result"
     headers = {
@@ -55,7 +55,7 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
     }
     payload = {
         "studentuid": student_uid,
-        "programID": 80,
+        "programID": programID,
     }
     
     async with httpx.AsyncClient(timeout=30.0, verify=False) as client:
@@ -69,7 +69,7 @@ async def fetch_student_result(jwt_token: str, student_uid: str) -> dict:
                 detail=f"Failed to fetch student result: {str(e)}"
             )
 
-async def fetch_result_with_token(token):
+async def fetch_result_with_token(token, programID=80):
     if token is None or token.strip() == "":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -85,7 +85,7 @@ async def fetch_result_with_token(token):
             detail="studentuid not found in JWT token"
         )
     
-    result_data = await fetch_student_result(token, student_uid)
+    result_data = await fetch_student_result(token, student_uid, programID)
     
     if result_data.get("status") != "success":
         raise HTTPException(
@@ -129,10 +129,10 @@ async def fetch_result_post(body: LoginRequest):
                 detail=f"Login failed: {str(e)}"
             )            
 
-@app.get("/")
-async def fetch_result(token: str = Header(...)):
+@app.get("/{programID}")
+async def fetch_result(token: str = Header(...), programID: int = 80):
     
-    return await fetch_result_with_token(token)
+    return await fetch_result_with_token(token, programID)
 
 @app.get("/health")
 async def health_check():
