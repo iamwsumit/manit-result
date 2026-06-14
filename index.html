@@ -903,7 +903,7 @@
     try {
       const res = await fetch(`https://manit-result.vercel.app/${programID}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'token': token }
+        headers: { 'Content-Type': 'application/json', 'Token': token }
       });
 
       if (!res.ok) throw new Error('Invalid or expired token. Please get a fresh one from the portal.');
@@ -1011,7 +1011,7 @@
   (function checkUrlToken() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    const programID = params.get('programID') || 80;
+    const programID = params.get('program') || 80;
     if (token) {
       window.history.replaceState({}, document.title, window.location.pathname);
       fetchResults(token, programID);
